@@ -11,14 +11,25 @@ workspace "Hazel"														-- Aquvalent VS .sln file
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"         -- "{Debug, Release} - {windows, mac, linux} - {x32, x64}"
 
+
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}															-- Create struct
+IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"						-- path of directory put into struct, and this struct then use in HazelProject as variable
+																		-- this struct need for to set #include glfw/glfw3.h. it's contain .h files so its necessary for Compiler
+
+include "Hazel/vendor/GLFW"												-- include premake5 file of GLFW project
+
 project "Hazel"															-- Aquvalent VS .vcxproj file
 	location "Hazel"													-- project Folder
-	kind "SharedLib"                                                    -- project is DLL library
-	language "C++"                                                      -- Set Program language
+	kind "SharedLib"													-- project is DLL library
+	language "C++"														 -- Set Program language
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")                   -- Output director for .exe files -- we create this output path here because output files make in Hazel Project
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")                  -- Output director for .obj files -- we create this output path here because output files make in Hazel Project
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")					 -- Output director for .exe files -- we create this output path here because output files make in Hazel Project
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")					-- Output director for .obj files -- we create this output path here because output files make in Hazel Project
 	
+	pchheader "hzpch.h"													-- Equivalent to use precompile file into Project
+	pchsource "Hazel/src/hzpch.cpp"										-- Equivalent to create precompile file in VS
+
 	files
 	{
 		"%{prj.name}/src/**.h",											-- create all project files ** means that search all .h or .cpp files in src folder or it's subfolder'
@@ -28,14 +39,21 @@ project "Hazel"															-- Aquvalent VS .vcxproj file
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"                             -- project Hazel include files
+		"%{prj.name}/vendor/spdlog/include",								-- project Hazel include files for Compiler
+		"%{IncludeDir.GLFW}"												-- get variable "GLFW" from struct for Compiler
+	}
+
+	links																-- Linking GLFW into HazelProject, now Hazel is dependon GLFW
+	{ 
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	--For windows platform
-	filter "system:windows"                                            
-		cppdialect "C++17"                                              -- Compiler definition
+	filter "system:windows"
+		cppdialect "C++17"												-- Compiler definition
 		staticruntime "On"												-- Linking Runtime library
-		systemversion "latest"                                    -- windows SDK version
+		systemversion "latest"											-- windows SDK version
 
 		-- #defines
 		defines
@@ -94,10 +112,10 @@ project "Sandbox"
 	}
 
 	--For windows platform
-	filter "system:windows"                            
+	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
-		systemversion "latest"                   
+		systemversion "latest"
 
 		-- #defines
 		defines
