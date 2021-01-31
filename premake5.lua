@@ -52,7 +52,7 @@ project "Hazel"															-- Aquvalent VS .vcxproj file
 	--For windows platform
 	filter "system:windows"
 		cppdialect "C++17"												-- Compiler definition
-		staticruntime "On"												-- Linking Runtime library
+		staticruntime "Off"												-- Linking Runtime library / I switch off
 		systemversion "latest"											-- windows SDK version
 
 		-- #defines
@@ -72,14 +72,20 @@ project "Hazel"															-- Aquvalent VS .vcxproj file
 
 		filter "configurations:Debug"
 			defines "HZ_DEBUG"
+			buildoptions "/MDd"											-- it happend that we need Dynamic library
+																		-- because Hazel and glfw heaps not comunicate correctly
+																		-- thats why we switch off staticruntime
+																		-- This directive = Project properties->code generation->RunTime Library - /MDd
 			symbols "On"
 
 		filter "configurations:Release"
 			defines "HZ_RELEASE"
+			buildoptions "/MD"
 			optimize "On"
 
 		filter "configurations:Dist"
 			defines "HZ_DIST"
+			buildoptions "/MD"
 			optimize "On"
 
 
@@ -114,7 +120,7 @@ project "Sandbox"
 	--For windows platform
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "Off"
 		systemversion "latest"
 
 		-- #defines

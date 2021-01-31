@@ -4,6 +4,7 @@
 //#include "Events/Event.h" // get error because when Application.cpp is compiled first include Event.h file and then hzpch.h file
 #include "Window.h"
 #include "Hazel/Events/ApplicationEvent.h"
+#include "Hazel/LayerStack.h"
 
 class Event;
 
@@ -16,10 +17,15 @@ namespace Hazel {
 		Application();
 		virtual ~Application();
 
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
+
 		void Run();
 		void OnEvent(Event& e);
-	private:
 
+
+	private:
+		LayerStack m_LayerStack;
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_Window;

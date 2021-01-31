@@ -48,7 +48,7 @@ namespace Hazel {
 		{
 			return GetCategoryFlags() & category;
 		}
-	protected:
+	public:
 		bool m_Handled = false;
 	};
 
