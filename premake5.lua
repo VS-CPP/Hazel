@@ -16,8 +16,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"         -- "{Deb
 IncludeDir = {}															-- Create struct
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"						-- path of directory put into struct, and this struct then use in HazelProject as variable
 																		-- this struct need for to set #include glfw/glfw3.h. it's contain .h files so its necessary for Compiler
+IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 
 include "Hazel/vendor/GLFW"												-- include premake5 file of GLFW project
+include "Hazel/vendor/GLAD"
 
 project "Hazel"															-- Aquvalent VS .vcxproj file
 	location "Hazel"													-- project Folder
@@ -40,26 +42,29 @@ project "Hazel"															-- Aquvalent VS .vcxproj file
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",								-- project Hazel include files for Compiler
-		"%{IncludeDir.GLFW}"												-- get variable "GLFW" from struct for Compiler
+		"%{IncludeDir.GLFW}",												-- get variable "GLFW" from struct for Compiler
+		"%{IncludeDir.Glad}"
 	}
 
 	links																-- Linking GLFW into HazelProject, now Hazel is dependon GLFW
 	{ 
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 
 	--For windows platform
 	filter "system:windows"
 		cppdialect "C++17"												-- Compiler definition
-		staticruntime "Off"												-- Linking Runtime library / I switch off
+		staticruntime "Off"												-- Linking Runtime library / I switch off it's not static any more'
 		systemversion "latest"											-- windows SDK version
 
 		-- #defines
 		defines
 		{
 			"HZ_BUILD_DLL",
-			"HZ_PLATFORM_WINDOWS"
+			"HZ_PLATFORM_WINDOWS",
+			--"GLFW_INCLUDE_NONE"
 		}
 
 
