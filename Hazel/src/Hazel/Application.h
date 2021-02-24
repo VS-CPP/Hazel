@@ -22,14 +22,18 @@ namespace Hazel {
 
 		void Run();
 		void OnEvent(Event& e);
-
-
+		
+		inline static Application& Get() { return *s_Instance; }
+		inline Window& GetWindow() { return *m_Window; }
 	private:
 		LayerStack m_LayerStack;
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_Window;
 		bool m_Runing;
+
+	private:
+		static Application* s_Instance;
 	};
 
 	// TO be defined in CLIENT
